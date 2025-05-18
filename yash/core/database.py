@@ -1,6 +1,7 @@
 import motor.motor_asyncio
+import config 
 
-client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
+client = motor.motor_asyncio.AsyncIOMotorClient(config.MONGO_DB_URI)
 db = client["users"]
 
 collection = None  # define globally
