@@ -1,22 +1,25 @@
 from pyrogram import filters
-from yash import user_db, app
+from yash import app
+from yash.core import database
 from yash.data.characters import get_character
 from yash.utils.tools import user_check
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery 
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 @app.on_message(filters.command("profile"))
 @user_check()
 async def profile_handler(client, message):
     user_id = message.from_user.id
-    user_db.set_table("users")
-    user_data = user_db.find_by(user_id=user_id)
-    if len(user_data) <= 2:
-                    Btn = InlineKeyboardMarkup(
-                    [[InlineKeyboardButton("Start Me", url=f"https://t.me/{app.get_me().username}")]]
-                )
-                    await message.reply("Character Nhi Mila Start Me", reply_markup=Btn, disable_web_page_preview=True)
-    character_name = user_data[1]
-    level = user_data[2] if len(user_data) > 3 else 1
+
+    user_data = await database.collection.find_one({"user_id": user_id})
+    if not user_data or "character" not in user_data:
+        Btn = InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Start Me", url=f"https://t.me/{app.username}")]]
+        )
+        await message.reply("Character Nhi Mila Start Me", reply_markup=Btn, disable_web_page_preview=True)
+        return
+
+    character_name = user_data["character"]
+    level = user_data.get("level", 1)
 
     character = get_character(character_name)
     if not character:
