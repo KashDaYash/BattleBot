@@ -1,6 +1,7 @@
 from pyrogram import filters
 from pyrogram.types import Message
-from yash import app, user_db
+from yash import app
+from yash.core import database
 from random import choice
 from datetime import datetime
 from yash.data.characters import CHARACTERS
@@ -16,23 +17,10 @@ async def start_handler(client, message: Message):
     user_id = user.id
     name = user.first_name
 
-    user_db.set_table("users")
-    user_db.create_table("users", {
-        "user_id": "INTEGER",
-        "character": "TEXT",
-        "level": "INTEGER",
-        "xp": "INTEGER",
-        "exp_max": "INTEGER",
-        "kills": "INTEGER",
-        "coins": "INTEGER",
-        "yadle": "INTEGER",
-        "joined_date": "TEXT"
-    }, primary_key="user_id")
-
-    existing = user_db.find_by(user_id=user_id)
+    existing = await database.exists({"user_id": user_id})
     if not existing:
         random_character = choice(list(CHARACTERS.keys()))
-        user_db.insert({
+        await database.insert({
             "user_id": user_id,
             "character": random_character,
             "level": 1,
@@ -48,8 +36,9 @@ async def start_handler(client, message: Message):
             f"You have been assigned **{random_character}**!"
         )
     else:
-        character_name = existing[1]
+        doc = await database.collection.find_one({"user_id": user_id})
+        character_name = doc.get("character", "Unknown Warrior")
         await message.reply_text(
             f"Hello {name}, welcome back!\n"
             f"You are currently assigned to **{character_name}**."
-        )
+    )
