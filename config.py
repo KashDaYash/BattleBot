@@ -8,3 +8,4 @@ BOT_TOKEN = "6985760959:AAF28g7DByWHCX3rDJyY-e-SpWcPbFZyskc"
 OWNER_ID = 1302298741  # Bot owner ID
 LOGGER_ID = -1002074616947  # Channel or group ID for bot logs
 OWNER_USERNAME = "KashDaYash"
+MONGO_DB_URI = ""
