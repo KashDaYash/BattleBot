@@ -2,6 +2,7 @@ import os
 
 IMAGE_PATH = os.path.join("yash", "data", "images")
 
+
 class Character:
     def __init__(self, name, stars, base_hp, base_damage, base_speed, motto, abilities, image_file):
         self.name = name
@@ -11,8 +12,15 @@ class Character:
         self.base_speed = base_speed
         self.motto = motto
         self.abilities = abilities
-        self.level = 1
         self.image_path = os.path.join(IMAGE_PATH, image_file)
+
+        self.level = 1
+        self.hp = base_hp
+        self.damage = base_damage
+        self.speed = base_speed
+
+    def set_level(self, level: int):
+        self.level = max(1, level)
         self.update_stats()
 
     def update_stats(self):
@@ -23,20 +31,17 @@ class Character:
         )
         self.speed = self.base_speed + (self.level - 1) * 1
 
-    def level_up(self):
-        if self.level < 5:
-            self.level += 1
-            self.update_stats()
-
     def display_info(self):
         return f"""
-{self.name} (Level {self.level}) • {self.stars} 
+{self.name} (Level {self.level}) • {self.stars}
 HP: {self.hp} | Damage: {self.damage[0]} - {self.damage[1]} | Speed: {self.speed}
 𝗠𝗼𝘁𝘁𝗼: {self.motto}
 Abilities: {self.abilities}
 """
 
-CHARACTERS = {
+
+# Static data (unchanging base info)
+CHARACTER_BASES = {
     "RyuujinKai": Character(
         "Ryuujin Kai", "✪✪✪✪", 30, (10, 12), 52,
         "The dragon’s roar shakes the heavens!",
@@ -69,5 +74,17 @@ CHARACTERS = {
     ),
 }
 
-def get_character(name):
-    return CHARACTERS.get(name)
+
+def get_character(name: str, level: int = 1):
+    base = CHARACTER_BASES.get(name)
+    if base:
+        # Create a new instance so original isn't mutated
+        character = Character(
+            base.name, base.stars,
+            base.base_hp, base.base_damage,
+            base.base_speed, base.motto,
+            base.abilities, os.path.basename(base.image_path)
+        )
+        character.set_level(level)
+        return character
+    return None
