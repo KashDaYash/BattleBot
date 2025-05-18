@@ -2,9 +2,9 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from yash import app
 from random import randint
-from yash.data.characters import CHARACTERS, get_character
+from yash.data.characters import get_character
 from yash.utils.tools import user_check
-
+from yash.core import database
 
 battles = {}
 
@@ -26,7 +26,7 @@ async def start_fight(client, message):
     # Send challenge request
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("✅ Accept", callback_data=f"accept_{message.chat.id}_{message.from_user.id}")],
-        [InlineKeyboardButton("❌ Reject", callback_data="reject_{message.chat.id}_{message.from_user.id}")]
+        [InlineKeyboardButton("❌ Reject", callback_data=f"reject_{message.chat.id}_{message.from_user.id}")]
     ])
     try:
         await client.send_message(
@@ -42,15 +42,35 @@ async def start_fight(client, message):
 async def accept_fight(client, callback_query):
     challenger_id = int(callback_query.data.split("_")[-1])
     chat_id = int(callback_query.data.split("_")[1])
-    if callback_query.from_user.id == challenger_id:
+    opponent_id = callback_query.from_user.id
+
+    if opponent_id == challenger_id:
         await callback_query.answer("You cannot accept your own challenge!", show_alert=True)
         return
 
-    # Start the battle
+    # Fetch users' data from MongoDB
+    challenger_data = await database.collection.find_one({"user_id": challenger_id})
+    opponent_data = await database.collection.find_one({"user_id": opponent_id})
+
+    if not challenger_data or not opponent_data:
+        await callback_query.answer("One of the players has no character assigned!", show_alert=True)
+        return
+
+    c1 = get_character(challenger_data["character"])
+    c2 = get_character(opponent_data["character"])
+
+    if not c1 or not c2:
+        await callback_query.answer("Character data missing!", show_alert=True)
+        return
+
+    c1.level = challenger_data.get("level", 1)
+    c2.level = opponent_data.get("level", 1)
+
+    c1.update_stats()
+    c2.update_stats()
+
     challenger = await client.get_users(challenger_id)
     opponent = callback_query.from_user
-    c1 = get_character("RyuujinKai")  # Get character from database or default
-    c2 = get_character("AkariYume")  # Same for opponent character
 
     result = simulate_fight(c1, c2, challenger, opponent)
     await callback_query.message.edit_text(result)
@@ -63,7 +83,7 @@ async def reject_fight(client, callback_query):
     await callback_query.message.delete()
     await app.send_message(chat_id=chat_id, text="❌ Fight Request Rejected!")
 
-# Add the simulate_fight function
+# Simulate the fight
 def simulate_fight(c1, c2, user1, user2):
     log = ""
     turn = 0
@@ -83,12 +103,8 @@ def simulate_fight(c1, c2, user1, user2):
         log += f"{attacker.name} attacks {defender.name} for {dmg} damage.\n"
         turn += 1
 
-    if c1_hp > 0:
-        winner_user = user1
-        winner_char = c1
-    else:
-        winner_user = user2
-        winner_char = c2
-
+    winner_user = user1 if c1_hp > 0 else user2
+    winner_char = c1 if c1_hp > 0 else c2
     log += f"\n\n🏆 Winner: {winner_user.first_name} ({winner_char.name})"
     return log
+
