@@ -1,4 +1,3 @@
-# Sample content for requirements.txt
 pyrogram
-tgcrypto 
-sqlite3
+tgcrypto
+motor
