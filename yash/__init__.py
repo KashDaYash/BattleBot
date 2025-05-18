@@ -1,7 +1,8 @@
-# Sample content for __init__.py
 from yash.core.bot import Yaara
-from yash.core.database import DynamicDB
+from yash.core import database
 
-user_db = DynamicDB("users.db")
+# Set MongoDB collection to 'users'
+database.init_db("users")
+
+# Start the bot instance
 app = Yaara()
-
