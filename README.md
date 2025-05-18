@@ -118,7 +118,9 @@ BattleBot/
 
 Credits
 
-Built by [Your Name or Team]
+Built by
+1. [KASHDAYASH]('https://github.com/KashDaYash')
+2. [ShivanshuDeo]('https://github.com/TheChampu')
 
 Characters & concept inspired by anime battle tropes
 
