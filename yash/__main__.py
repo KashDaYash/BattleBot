@@ -13,9 +13,6 @@ from yash import database
 HELPABLE = {}
 
 async def init():
-    # Init MongoDB collection
-    database.init_db("users")
-
     # Load modules with help text
     for module_name in ALL_MODULES:
         imported_module = importlib.import_module(module_name)
@@ -24,9 +21,10 @@ async def init():
                 HELPABLE[imported_module.__MODULE__.lower()] = imported_module
     print("sᴜᴄᴄᴇssғᴜʟʟʏ ɪᴍᴘᴏʀᴛᴇᴅ ᴍᴏᴅᴜʟᴇs...")
 
-    # Check if OWNER exists in DB
-    owner_exists = await database.exists({"_id": config.OWNER_ID})
+    # Init MongoDB collection 
 
+    owner_exists = await database.exists({"_id": config.OWNER_ID})
+    
     if not owner_exists:
         random_character = choice(list(Character.keys()))
         await database.insert({
