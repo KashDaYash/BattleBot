@@ -22,7 +22,7 @@ async def init():
     print("sᴜᴄᴄᴇssғᴜʟʟʏ ɪᴍᴘᴏʀᴛᴇᴅ ᴍᴏᴅᴜʟᴇs...")
 
     # Init MongoDB collection 
-
+    database.init_db("users")
     owner_exists = await database.exists({"_id": config.OWNER_ID})
     
     if not owner_exists:
