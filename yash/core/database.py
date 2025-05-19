@@ -28,8 +28,8 @@ async def delete(filters: dict):
     result = await collection.delete_many(filters)
     return result.deleted_count
 
-async def exists(filters: dict):
-    if not collection:
-        raise RuntimeError("Database not initialized. Call init_db() first.")
-    doc = await collection.find_one(filters)
-    return doc is not None
+async def exists(self, query: dict) -> bool:
+    if self.collection is None:
+        raise ValueError("Collection is not set.")
+    result = await self.collection.find_one(query)
+    return result is not None
