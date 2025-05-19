@@ -1,7 +1,7 @@
 import asyncio
 import importlib
 from random import choice
-
+from datetime import datetime
 from pyrogram import idle
 from yash import app
 from yash.data.characters import Character
@@ -28,10 +28,15 @@ async def init():
     if not owner_exists:
         random_character = choice(list(Character.keys()))
         await database.insert({
-            "_id": config.OWNER_ID,
+            "_id": user_id,
             "character": random_character,
             "level": 1,
-            "xp": 0
+            "xp": 0,
+            "exp_max": 5000,
+            "kills": 0,
+            "coins": 0,
+            "yadle": 0,
+            "joined_date": datetime.now().strftime("%m/%d/%y")
         })
 
     # Start bot
