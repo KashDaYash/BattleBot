@@ -28,8 +28,8 @@ async def delete(filters: dict):
     result = await collection.delete_many(filters)
     return result.deleted_count
 
-async def exists(self, query: dict) -> bool:
-    if self.collection is None:
+async def exists(query: dict) -> bool:
+    if collection is None:
         raise ValueError("Collection is not set.")
-    result = await self.collection.find_one(query)
+    result = await collection.find_one(query)
     return result is not None
