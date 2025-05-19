@@ -28,7 +28,7 @@ async def init():
     if not owner_exists:
         random_character = choice(list(CHARACTER_BASES.keys()))
         await database.insert({
-            "_id": user_id,
+            "_id": config.OWNER_ID,
             "character": random_character,
             "level": 1,
             "xp": 0,
