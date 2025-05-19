@@ -11,7 +11,7 @@ def init_db(collection_name):
     collection = db[collection_name]
 
 async def insert(data: dict):
-    if not collection:
+    if collection is None:
         raise RuntimeError("Database not initialized. Call init_db() first.")
     result = await collection.insert_one(data)
     return result.inserted_id
