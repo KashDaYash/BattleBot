@@ -4,7 +4,7 @@ import config
 client = motor.motor_asyncio.AsyncIOMotorClient(config.MONGO_DB_URI)
 db = client["users"]
 
-collection = None  # define globally
+collection = db["usercol"]  # define globally
 
 def init_db(collection_name):
     global collection
