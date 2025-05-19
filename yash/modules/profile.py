@@ -10,7 +10,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 async def profile_handler(client, message):
     user_id = message.from_user.id
 
-    user_data = await database.collection.find_one({"user_id": user_id})
+    user_data = await database.collection.find_one({"_id": user_id})
     if not user_data or "character" not in user_data:
         Btn = InlineKeyboardMarkup(
             [[InlineKeyboardButton("Start Me", url=f"https://t.me/{app.username}")]]
