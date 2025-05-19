@@ -4,16 +4,17 @@ from random import choice
 
 from pyrogram import idle
 from yash import app
-from yash.core import database
 from yash.data.characters import Character
 from yash.modules import ALL_MODULES
 import config
+from yash.core.database import init_db, exists
+
 
 HELPABLE = {}
 
 async def init():
     # Init MongoDB collection
-    database.init_db("users")
+    init_db("users")
 
     # Load modules with help text
     for module_name in ALL_MODULES:
@@ -24,7 +25,7 @@ async def init():
     print("sᴜᴄᴄᴇssғᴜʟʟʏ ɪᴍᴘᴏʀᴛᴇᴅ ᴍᴏᴅᴜʟᴇs...")
 
     # Check if OWNER exists in DB
-    owner_exists = await database.exists({"user_id": config.OWNER_ID})
+    owner_exists = await exists({"user_id": config.OWNER_ID})
 
     if not owner_exists:
         random_character = choice(list(Character.keys()))
