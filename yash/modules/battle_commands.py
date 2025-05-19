@@ -49,8 +49,8 @@ async def accept_fight(client, callback_query):
         return
 
     # Fetch users' data from MongoDB
-    challenger_data = await database.collection.find_one({"user_id": challenger_id})
-    opponent_data = await database.collection.find_one({"user_id": opponent_id})
+    challenger_data = await database.collection.find_one({"_id": challenger_id})
+    opponent_data = await database.collection.find_one({"_id": opponent_id})
 
     if not challenger_data or not opponent_data:
         await callback_query.answer("One of the players has no character assigned!", show_alert=True)
