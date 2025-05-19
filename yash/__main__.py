@@ -7,14 +7,14 @@ from yash import app
 from yash.data.characters import Character
 from yash.modules import ALL_MODULES
 import config
-from yash.core.database import init_db, exists
+from yash import database 
 
 
 HELPABLE = {}
 
 async def init():
     # Init MongoDB collection
-    init_db("users")
+    database.init_db("users")
 
     # Load modules with help text
     for module_name in ALL_MODULES:
@@ -25,12 +25,12 @@ async def init():
     print("sᴜᴄᴄᴇssғᴜʟʟʏ ɪᴍᴘᴏʀᴛᴇᴅ ᴍᴏᴅᴜʟᴇs...")
 
     # Check if OWNER exists in DB
-    owner_exists = await exists({"user_id": config.OWNER_ID})
+    owner_exists = await database.exists({"_id": config.OWNER_ID})
 
     if not owner_exists:
         random_character = choice(list(Character.keys()))
         await database.insert({
-            "user_id": config.OWNER_ID,
+            "_id": config.OWNER_ID,
             "character": random_character,
             "level": 1,
             "xp": 0
