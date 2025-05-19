@@ -5,7 +5,7 @@ from random import choice
 from pyrogram import idle
 from yash import app
 from yash.core import database
-from yash.data.characters import CHARACTERS
+from yash.data.characters import CHARACTER_BASES
 from yash.modules import ALL_MODULES
 import config
 
