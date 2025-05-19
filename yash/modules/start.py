@@ -17,11 +17,11 @@ async def start_handler(client, message: Message):
     user_id = user.id
     name = user.first_name
 
-    existing = await database.exists({"user_id": user_id})
+    existing = await database.exists({"_id": user_id})
     if not existing:
         random_character = choice(list(Character.keys()))
         await database.insert({
-            "user_id": user_id,
+            "_id": user_id,
             "character": random_character,
             "level": 1,
             "xp": 0,
@@ -36,7 +36,7 @@ async def start_handler(client, message: Message):
             f"You have been assigned **{random_character}**!"
         )
     else:
-        doc = await database.collection.find_one({"user_id": user_id})
+        doc = await database.collection.find_one({"_id": user_id})
         character_name = doc.get("character", "Unknown Warrior")
         await message.reply_text(
             f"Hello {name}, welcome back!\n"
