@@ -5,7 +5,7 @@ from random import choice
 from pyrogram import idle
 from yash import app
 from yash.core import database
-from yash.data.characters import CHARACTERS
+from yash.data.characters import Character
 from yash.modules import ALL_MODULES
 import config
 
@@ -27,7 +27,7 @@ async def init():
     owner_exists = await database.exists({"user_id": config.OWNER_ID})
 
     if not owner_exists:
-        random_character = choice(list(CHARACTERS.keys()))
+        random_character = choice(list(Character.keys()))
         await database.insert({
             "user_id": config.OWNER_ID,
             "character": random_character,

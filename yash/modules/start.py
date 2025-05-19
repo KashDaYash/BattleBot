@@ -4,7 +4,7 @@ from yash import app
 from yash.core import database
 from random import choice
 from datetime import datetime
-from yash.data.characters import CHARACTERS
+from yash.data.characters import Character
 
 __MODULE__ = "Start"
 __HELP__ = """
@@ -19,7 +19,7 @@ async def start_handler(client, message: Message):
 
     existing = await database.exists({"user_id": user_id})
     if not existing:
-        random_character = choice(list(CHARACTERS.keys()))
+        random_character = choice(list(Character.keys()))
         await database.insert({
             "user_id": user_id,
             "character": random_character,
