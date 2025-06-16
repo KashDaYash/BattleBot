@@ -1,6 +1,7 @@
 from pyrogram import Client, filters
 from yash import app, db
 
+users_collection = db["users"]
 # Define the characters
 characters = {
     "RyuujinKai": {
