@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from yash import app, db
-
+from config import OWNER_ID 
 users_collection = db["users"]
 # Define the characters
 characters = {
@@ -66,10 +66,8 @@ characters = {
     }
 }
 
-# Admin-only command to add characters
-ADMIN_ID = 1302298741
 
-@app.on_message(filters.command("addcharacter") & filters.user(ADMIN_ID))
+@app.on_message(filters.command("addcharacter") & filters.user(OWNER_ID))
 def add_character(client, message):
     # Insert characters into the MongoDB collection
     users_collection.update_one(
