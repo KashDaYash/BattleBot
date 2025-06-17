@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from yash import app, db
-
+from config import OWNER_ID 
 
 shop_collection = db["shop_items"]  # Shop items collection name
 
@@ -18,10 +18,8 @@ shop_items = {
     "chocolate": {"emoji": "🍫", "name": "Chocolate", "price": 9, "hp": 16},
 }
 
-# Admin-only command to add shop items
-ADMIN_ID = 1302298741
 
-@app.on_message(filters.command("addshopitems") & filters.user(ADMIN_ID))
+@app.on_message(filters.command("addshopitems") & filters.user(OWNER_ID))
 def add_shop_items(client, message):
     # Insert shop items into the MongoDB collection
     shop_collection.update_one(
