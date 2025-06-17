@@ -136,5 +136,4 @@ This project is licensed under the MIT License. Feel free to fork and expand!
 
 ---
 
-Let me know if you want it in Hindi or want to add badges, GIF previews, or contribution instructions too.
 
