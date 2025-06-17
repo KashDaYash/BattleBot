@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from yash import app, db
-
+from config import OWNER_ID 
 
 enemies_collection = db["enemies"]
 
@@ -85,10 +85,9 @@ enemies = {
     }
 }
 
-# Admin-only command to add enemies
-ADMIN_ID = 1302298741
 
-@app.on_message(filters.command("addenemies") & filters.user(ADMIN_ID))
+
+@app.on_message(filters.command("addenemies") & filters.user(OWNER_ID))
 def add_enemies(client, message):
     # Insert enemies into the MongoDB collection
     enemies_collection.update_one(
