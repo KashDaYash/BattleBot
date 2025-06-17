@@ -5,15 +5,14 @@ from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import enums
 from functools import wraps
 from yash import app
-from yash.core.database import init_db, exists
+from yash import db
 
 def user_check():
     def decorator(func):
         @wraps(func)
         async def wrapper(client, message: Message, *args, **kwargs):
             try:
-                await init_db("users")
-                user_exists = await exists({"user_id": message.from_user.id})
+                user_exists = await db.find_users({"_id": message.from_user.id})
 
                 bot_info = await app.get_me()
                 Btn = InlineKeyboardMarkup(

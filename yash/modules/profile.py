@@ -1,36 +1,43 @@
-from pyrogram import filters
-from yash import app
-from yash.core import database
-from yash.data.characters import get_character
-from yash.utils.tools import user_check
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+# handlers/profile.py
+from pyrogram import Client, filters
+from db.users import users_collection, characters_collection
 
-@app.on_message(filters.command("profile"))
-@user_check()
-async def profile_handler(client, message):
+@Client.on_message(filters.command("profile"))
+async def stats_handler(client, message):
     user_id = message.from_user.id
 
-    user_data = await database.collection.find_one({"_id": user_id})
-    if not user_data or "character" not in user_data:
-        Btn = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Start Me", url=f"https://t.me/{app.username}")]]
-        )
-        await message.reply("Character Nhi Mila Start Me", reply_markup=Btn, disable_web_page_preview=True)
-        return
+    # Fetch user profile
+    user = await users_collection.find_one({"user_id": user_id})
+    if not user:
+        return await message.reply("❌ Aap abhi tak game me shamil nahi hue. Type /start to join.")
 
-    character_name = user_data["character"]
-    level = user_data.get("level", 1)
+    # Fetch character based on user.character_id
+    char = await characters_collection.find_one({"_id": user["character_id"]})
+    if not char:
+        return await message.reply("❌ Character data not found. Please contact support.")
 
-    character = get_character(character_name)
-    if not character:
-        return await message.reply("Character data load nahi ho paya!")
+    # Fallback HP to character default if undefined
+    current_hp = user.get("hp", char["hp"])
 
-    character.level = level
-    character.update_stats()
+    # Create message
+    msg = (
+        f"📊 <b>Your Stats</b>:\n\n"
+        f"🎭 Character: {char['name']} {char['stars']}\n"
+        f"📈 Level: {user['level']}\n"
+        f"⭐ XP: {user['xp']}/{user['exp_max']}\n"
+        f"💥 HP: {current_hp}\n"
+        f"🛡 Defense: {char['defense']}\n"
+        f"⚔ Damage: {char['damage'][0]} - {char['damage'][1]}\n\n"
+        f"💥 Kills: {user['kills']}\n"
+        f"🪙 Coins: {user['coins']}\n"
+        f"🧿 Yashi: {user['yashi']}\n"
+        f"📅 Joined: {user['joined_date']}\n\n"
+        f"🎯 Abilities:\n{char['ability']}"
+    )
 
-    caption = character.display_info()
-
-    try:
-        await message.reply_photo(photo=character.image_path, caption=caption)
-    except Exception as e:
-        await message.reply(f"Image bhejne me problem aayi: {e}")
+    await client.send_photo(
+        chat_id=message.chat.id,
+        photo=char["image"],
+        caption=msg,
+        parse_mode="HTML"
+    )
