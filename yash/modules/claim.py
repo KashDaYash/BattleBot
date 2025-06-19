@@ -1,9 +1,7 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
 
-db = AsyncIOMotorClient().fight_db
 
 @Client.on_message(filters.command("daily"))
 async def daily_command(client, message: Message):

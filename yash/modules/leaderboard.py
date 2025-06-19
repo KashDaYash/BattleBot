@@ -1,6 +1,5 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
-from motor.motor_asyncio import AsyncIOMotorClient
 
 # Common Function for Leaderboard Message
 async def get_leaderboard(metric: str) -> str:

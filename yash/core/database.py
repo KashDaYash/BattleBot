@@ -4,4 +4,10 @@ import config
 client = AsyncIOMotorClient(config.MONGO_DB_URI)
 
 db = client["yashigame"]
-users = db["users"]
+users_col = db["users"]
+char_col = db["characters"]
+fight_col = ["fight"]
+
+
+
+

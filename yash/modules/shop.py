@@ -1,4 +1,6 @@
-
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery 
+import asyncio
 
 
 @Client.on_message(filters.command("shop"))

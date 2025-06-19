@@ -1,8 +1,8 @@
-from pyrogram import Client, filters from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery from pymongo import MongoClient import random
+from pyrogram import Client, filters 
+from pyrogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton 
+import random
 
-client = MongoClient("mongodb://localhost:27017")  # Update with your Mongo URI mongo = client['battle_bot'] users_col = mongo['users']
-
-@Client.on_message(filters.command("hunt")) async def hunt_handler(c, m): user_id = m.from_user.id user = users_col.find_one({"user_id": user_id}) if not user: return await m.reply("⚠️ Pehle /start karke character le lo.")
+@Client.on_message(filters.command("hunt")) async def hunt_handler(c, m: Message): user_id = m.from_user.id user = users_col.find_one({"user_id": user_id}) if not user: return await m.reply("⚠️ Pehle /start karke character le lo.")
 
 characters = mongo.characters.find_one()
 enemies = mongo.enemies.find_one()
@@ -51,10 +51,7 @@ buttons = InlineKeyboardMarkup([
     ]
 ])
 try:
-    await q.edit_message_media(
-        media=("photo", enemy['image']),
-        reply_markup=buttons
-    )
+    await q.edit_message_media(media=("photo", enemy['image']), reply_markup=buttons)
     await q.edit_message_caption(caption, reply_markup=buttons, parse_mode="HTML")
 except Exception as e:
     await q.message.reply("❌ Error: " + str(e))
@@ -92,7 +89,6 @@ if not user or not characters or not enemies or not battle:
 
 char = characters[user['character_id']]
 enemy = enemies[battle['enemy_key']]
-msg_id = q.message.id
 
 if battle['player_hp'] <= 0:
     users_col.update_one({"user_id": user_id}, {"$unset": {"battle": ""}})
