@@ -1,0 +1,51 @@
+{
+  "name": "BattleBot",
+  "description": "A Telegram bot designed for user battles and interactions.",
+  "repository": "https://github.com/KashDaYash/BattleBot",
+  "keywords": ["telegram", "bot", "battle", "pyrogram"],
+  "env": {
+    "API_ID": {
+      "description": "Your Telegram API ID from https://my.telegram.org",
+      "required": true
+    },
+    "API_HASH": {
+      "description": "Your Telegram API Hash from https://my.telegram.org",
+      "required": true
+    },
+    "BOT_TOKEN": {
+      "description": "Your bot token from BotFather",
+      "required": true
+    },
+    "OWNER_ID": {
+      "description": "The user ID of the bot owner",
+      "required": true
+    },
+    "LOGGER_ID": {
+      "description": "Chat ID for logging events (use a group or channel ID)",
+      "required": true
+    },
+    "OWNER_USERNAME": {
+      "description": "The Telegram username of the bot owner (without @)",
+      "required": false
+    },
+    "MONGO_DB_URI": {
+      "description": "Your MongoDB URI to store bot data",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [],
+  "scripts": {
+    "postdeploy": "echo Bot successfully deployed!"
+  }
+}
